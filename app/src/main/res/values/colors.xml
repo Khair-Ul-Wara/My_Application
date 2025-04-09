@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+
+
+        <color name="theme_color">#66C3BF</color> <!-- Your theme color -->
+        <color name="light_theme_color">#DFF7F6</color> <!-- Light version of your theme color -->
+
+
+        <color name="colorPrimary">#66C3BF</color> <!-- Soft Teal -->
+        <color name="colorSecondary">#FF6F61</color> <!-- Coral Red -->
+        <color name="colorAccent">#FFD700</color> <!-- Golden Yellow -->
+        <color name="colorBackground">#F0F8FF</color> <!-- Alice Blue -->
+        <color name="colorPrimaryDark">#008080</color> <!-- Teal -->
+        <color name="colorText">#333333</color> <!-- Dark Gray -->
+        <color name="colorCardBackground">#FFFFFF</color> <!-- White -->
+        <color name="colorSuccess">#28A745</color> <!-- Green -->
+        <color name="colorError">#DC3545</color> <!-- Red -->
+        <color name="colorInfo">#17A2B8</color> <!-- Light Blue -->
+
+
+</resources>

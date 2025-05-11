@@ -3,7 +3,15 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
+    <!-- Very light teal -->
+    <color name="note_card_color">#FFFFFF</color> <!-- Pure white -->
 
+    <!-- Text Colors -->
+    <color name="primary_text">#333333</color> <!-- Dark gray -->
+    <color name="secondary_text">#666666</color> <!-- Medium gray -->
+
+    <!-- Borders -->
+    <color name="divider_color">#E0E0E0</color>
 
         <color name="theme_color">#66C3BF</color> <!-- Your theme color -->
         <color name="light_theme_color">#DFF7F6</color> <!-- Light version of your theme color -->

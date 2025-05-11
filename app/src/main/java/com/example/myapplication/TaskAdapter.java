@@ -1,61 +1,98 @@
 package com.example.myapplication;
 
+import android.content.Context;
+import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.annotation.Nullable;
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
+import android.util.Log;
 
-public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder> {
-    private final List<TaskItem> taskList;
 
-    public TaskAdapter(List<TaskItem> taskList) {
+public class TaskAdapter extends ArrayAdapter<TaskItem> {
+    private Context context;
+    private List<TaskItem> taskList;
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd, hh:mm a", Locale.getDefault());
+    private FirestoreHelper firestoreHelper;
+
+    public TaskAdapter(Context context, List<TaskItem> taskList, FirestoreHelper firestoreHelper) {
+        super(context, R.layout.item_task, taskList);
+        this.context = context;
         this.taskList = taskList;
+        this.firestoreHelper = firestoreHelper;
     }
 
     @NonNull
     @Override
-    public TaskViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.task_item, parent, false);
-        return new TaskViewHolder(view);
-    }
+    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+        if (convertView == null) {
+            convertView = LayoutInflater.from(context)
+                    .inflate(R.layout.item_task, parent, false);
+        }
 
-    @Override
-    public void onBindViewHolder(@NonNull TaskViewHolder holder, int position) {
         TaskItem task = taskList.get(position);
-        holder.taskText.setText(task.getTaskText());
-        holder.taskCheckBox.setChecked(task.isDone());
+        CheckBox taskCheckBox = convertView.findViewById(R.id.taskCheckBox);
+        TextView taskText = convertView.findViewById(R.id.taskText);
+        TextView taskDescription = convertView.findViewById(R.id.taskDescription);
+        TextView taskDueDate = convertView.findViewById(R.id.taskDueDate);
 
-        // Strike-through for completed tasks
-        if (task.isDone()) {
-            holder.taskText.setPaintFlags(holder.taskText.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        taskText.setText(task.getTaskText());
+        taskDescription.setText(task.getDescription());
+        taskCheckBox.setChecked(task.isDone());
+
+        if (task.getDueDate() != null) {
+            taskDueDate.setText(dateFormat.format(task.getDueDate()));
+            taskDueDate.setVisibility(View.VISIBLE);
         } else {
-            holder.taskText.setPaintFlags(holder.taskText.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
+            taskDueDate.setVisibility(View.GONE);
         }
 
-        holder.taskCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+        if (task.isDone()) {
+            taskText.setPaintFlags(taskText.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            taskDescription.setPaintFlags(taskDescription.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            taskText.setAlpha(0.5f);
+            taskDescription.setAlpha(0.5f);
+        } else {
+            taskText.setPaintFlags(taskText.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
+            taskDescription.setPaintFlags(taskDescription.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
+            taskText.setAlpha(1.0f);
+            taskDescription.setAlpha(1.0f);
+        }
+
+        taskCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
             task.setDone(isChecked);
-            notifyItemChanged(position);
+            // Update in Firestore
+            String docId = ((NotesActivity) context).getTaskDocId(position);
+            if (docId != null) {
+                firestoreHelper.updateTask(docId, task, new FirestoreHelper.FirestoreCallback() {
+                    @Override
+                    public void onSuccess(String documentId) {
+                        notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onFailure(Exception e) {
+                        Log.e("TaskAdapter", "Error updating task status", e);
+                        // Revert UI change if update fails
+                        taskCheckBox.setChecked(!isChecked);
+                    }
+                });
+            }
         });
+
+        return convertView;
     }
 
-    @Override
-    public int getItemCount() {
-        return taskList.size();
-    }
-
-    static class TaskViewHolder extends RecyclerView.ViewHolder {
-        CheckBox taskCheckBox;
-        TextView taskText;
-
-        public TaskViewHolder(@NonNull View itemView) {
-            super(itemView);
-            taskCheckBox = itemView.findViewById(R.id.taskCheckBox);
-            taskText = itemView.findViewById(R.id.taskText);
-        }
+    public void updateTasks(List<TaskItem> newTasks) {
+        taskList.clear();
+        taskList.addAll(newTasks);
+        notifyDataSetChanged();
     }
 }

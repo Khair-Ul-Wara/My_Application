@@ -121,9 +121,10 @@
     <!-- Sign Up Button -->
 
     <!-- Sign In Text -->
+
     <Button
         android:id="@+id/button"
-        android:layout_width="351dp"
+        android:layout_width="304dp"
         android:layout_height="61dp"
         android:backgroundTint="@color/colorPrimary"
         android:fontFamily="@font/poppins"
@@ -133,10 +134,9 @@
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/confirmPasswordInputLayout"
-        app:layout_constraintVertical_bias="0.293" />
+        app:layout_constraintVertical_bias="0.224" />
 
     <TextView
         android:id="@+id/tvSignIn"

@@ -1,0 +1,26 @@
+<resources>
+    <!-- Custom theme inheriting from light theme -->
+    <style name="CustomActionBarTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <!-- ActionBar customization -->
+        <item name="windowActionBar">true</item>
+        <item name="windowNoTitle">false</item>
+
+        <!-- Custom colors -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+
+        <!-- This makes the ActionBar use colorPrimary -->
+        <item name="actionBarStyle">@style/MyActionBarStyle</item>
+    </style>
+
+    <style name="MyActionBarStyle" parent="Widget.MaterialComponents.ActionBar.Solid">
+        <item name="background">@color/colorPrimary</item>
+        <item name="titleTextStyle">@style/MyActionBarTitle</item>
+    </style>
+
+    <!-- Custom Title TextAppearance -->
+    <style name="MyActionBarTitle">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">20sp</item> <!-- Customize the text size if needed -->
+    </style>
+</resources>
